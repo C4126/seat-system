@@ -23,26 +23,51 @@ def handle_client(conn, address, num):
     seat.append([])
     member_num=0
     while True:
+        data = conn.recv(1024).decode("Utf-8")
+        if data == 'exit':
+            break
+        if data == '<get_status>':
+            print('get_status')
+            tmp_string = "<"
+            tmp_num = 0
+            for i in seat[num]:
+                tmp_num += 1
+                tmp_string = tmp_string + i
+                if tmp_num != 4:
+                   tmp_string = tmp_string + ";"
+            if tmp_num == 0:
+                conn.send("<none>".encode('utf-8'))
+                continue
+            while tmp_num < 4:
+                tmp_num += 1
+                tmp_string = tmp_string + "No"
+                if tmp_num != 4:
+                    tmp_string = tmp_string + ";"
+            tmp_string+=">"
+            conn.send(tmp_string.encode("UTF-8"))
+            continue
+        else:
+            data = data.replace("<", "")
+            data = data.replace(">", "")
+            if data in seat[num]:
+                seat[num].remove(data)
+                conn.send("OK".encode("UTF-8"))
+                member_num -= 1
+                continue
+            else:
+                if member_num >= 4:
+                    conn.send("fail_out".encode("UTF-8"))
+                    continue
+                member_num += 1
+                seat[num].append(data)
+                conn.send("OK".encode("UTF-8"))
+                continue
+''' 
+   while True:
         # 接收客户端发来的数据
         data_from_client: str = conn.recv(1024).decode("UTF-8")
         if data_from_client == 'exit':
             break
-        if data_from_client == 'get_status':
-            print('get_status')
-            tmp_string=""
-            tmp_num=0
-            for i in seat[num]:
-                tmp_num+=1
-                tmp_string=tmp_string+i
-                if tmp_num!=4:
-                    tmp_string=tmp_string+";"
-            while(tmp_num<4):
-                tmp_num+=1
-                tmp_string=tmp_string+"?"
-                if tmp_num!=4:
-                    tmp_string=tmp_string+";"
-            conn.send(tmp_string.encode("UTF-8"))
-            continue
         if data_from_client == 'get_status':
             print('get_status')
             tmp_string=""
@@ -85,7 +110,7 @@ def handle_client(conn, address, num):
                 conn.send("fail_no_user".encode("UTF-8"))
                 continue
     conn.close()
-
+    '''
 
 if __name__ == '__main__':
     server_host = "127.0.0.1"
