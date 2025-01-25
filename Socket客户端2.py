@@ -17,6 +17,6 @@ def create_client(host, port):
     socket_client.close()
 
 if __name__ == '__main__':
-    host = "127.0.0.1"
+    host = "192.168.31.179"
     port = 8888
     create_client(host, port)
