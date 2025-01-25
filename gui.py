@@ -5,6 +5,8 @@ from tkinter import ttk
 
 # 定义全局变量seat
 seat = []
+original = ['25-175-62-2',"46-192-199-1"]
+mapping = ["Alex","Bob"]
 num = 0
 def create_server_socket(host, port):
     socket_server = socket.socket()
@@ -71,7 +73,7 @@ def handle_client(conn, address, anum):
                     tmp_num = 0
                     for i in seat[anum]:
                         tmp_num += 1
-                        tmp_string = tmp_string + i
+                        tmp_string = tmp_string + mapping[seat[anum].index(i)]
                         if tmp_num != 4:
                            tmp_string = tmp_string + ";"
                     while tmp_num < 4:
@@ -82,6 +84,7 @@ def handle_client(conn, address, anum):
                     tmp_string += ">"
                     conn.send(tmp_string.encode("UTF-8"))
                     continue
+                data = data.replace("get_status", "")
                 if data in seat[anum]:
                     print("remove " + data)
                     seat[anum].remove(data)
