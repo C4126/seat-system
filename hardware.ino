@@ -12,9 +12,7 @@ MFRC522_SPI spiDevice = MFRC522_SPI(SS_PIN, RST_PIN);
 MFRC522 mfrc522 = MFRC522(&spiDevice);
 
 #define WIFISSID "Redmi_FA9A"
-#define PASSWD "PASSWORD"
-
-const char* host = "";
+#define PASSWD "FL15995899876"
 
 Ticker flipper;
 WiFiClient client;
@@ -28,7 +26,7 @@ char status[100][100];
 void flip() {
   int n = 0;
   int cnt = 0;
-  client.print("<get-status>");
+  client.print("<get_status>");
   while (client.available() > 0) {
     char c = client.read();
     if (c == '<') n = 2;
@@ -84,13 +82,14 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-  if (!client.connect("192.168.31.233", 1234))
-  {
+  if (!client.connect("192.168.31.179", 8888)) {
     Serial.println("Connection to host failed");
     delay(1000);
     return;
   }
-  flipper.attach(10, flip);
+  client.print(".");
+  Serial.println("Connection to host successful");
+  flipper.attach(0.1, flip);
 }
 
 
