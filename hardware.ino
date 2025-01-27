@@ -8,6 +8,7 @@
 constexpr uint8_t RST_PIN = D3;
 constexpr uint8_t SS_PIN = D8;
 
+// 初始化读卡器
 MFRC522_SPI spiDevice = MFRC522_SPI(SS_PIN, RST_PIN);
 MFRC522 mfrc522 = MFRC522(&spiDevice);
 
@@ -19,10 +20,12 @@ WiFiClient client;
 #include "SSD1306Spi.h"
 #define ID_LEN (sizeof(mfrc522.uid.uidByte) * 400)
 
+// 初始化OLED
 SSD1306Spi oled(D0, D4, D1);
 
 char status[100][100];
 
+// 每隔一段时间向服务器查询状态
 void flip() {
   int n = 0;
   int cnt = 0;
@@ -52,6 +55,7 @@ void flip() {
   Serial.write("end.\n");
 }
 
+// 开机自检动画
 void drawRect(void) {
   for (int16_t i = 0; i < oled.getHeight() / 2; i += 2) {
     oled.drawRect(i, i, oled.getWidth() - 2 * i, oled.getHeight() - 2 * i);
@@ -60,6 +64,7 @@ void drawRect(void) {
   }
 }
 
+// 初始化
 void setup() {
   Serial.begin(115200);
 
@@ -95,6 +100,7 @@ void setup() {
 
 char tag[ID_LEN] = { 0 };
 
+// 检查是否有卡
 char* check_for_card() {
   // Look for new cards
   if (!mfrc522.PICC_IsNewCardPresent()) {
