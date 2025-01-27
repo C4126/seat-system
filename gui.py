@@ -5,8 +5,7 @@ from tkinter import ttk
 
 # 定义全局变量seat
 seat = []
-original = ['25-175-62-2',"46-192-199-1"]
-mapping = ["Alex","Bob"]
+mapping = {"25-175-62-2": "Alex","46-192-199-1": "Bob"}
 num = 0
 def create_server_socket(host, port):
     socket_server = socket.socket()
@@ -73,7 +72,7 @@ def handle_client(conn, address, anum):
                     tmp_num = 0
                     for i in seat[anum]:
                         tmp_num += 1
-                        tmp_string = tmp_string + mapping[seat[anum].index(i)]
+                        tmp_string = tmp_string + mapping[i]
                         if tmp_num != 4:
                            tmp_string = tmp_string + ";"
                     while tmp_num < 4:
@@ -131,6 +130,6 @@ if __name__ == '__main__':
     gui_thread.start()
 
     # 这里可以放置其他服务器代码
-    server_host = "192.168.31.179"
+    server_host = "127.0.0.1"
     server_port = 8888
     create_server_socket(server_host, server_port)
