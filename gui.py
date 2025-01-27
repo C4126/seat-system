@@ -40,6 +40,9 @@ def add_member(data):
 def handle_client(conn, address, anum):
     global num
     data = conn.recv(1024).decode("Utf-8")
+    data = data.replace("<", "")
+    data = data.replace(">", "")
+    # data = data.replace("\n", "")
     if data=="!":
         conn.send("主机".encode("UTF-8"))
         while True:
@@ -49,6 +52,8 @@ def handle_client(conn, address, anum):
             # data = data.replace("\n", "")
             if data == 'exit':
                 break
+            if data == "":
+                continue
             else:
                 add_member(data)
                 print("add "+data)
@@ -60,15 +65,16 @@ def handle_client(conn, address, anum):
         member_num = 0
         while True:
             data = conn.recv(1024).decode("Utf-8")
-            data = data.replace("<", "")
-            data = data.replace(">", "")
+            while "<" not in data:
+                data = data.replace("<", "")
+                data = data.replace(">", "")
             #data = data.replace("\n", "")
             if data == '':
                 continue
             else:
                 if data == 'exit':
                     break
-                if data == 'get_status':
+                if 'get_status' in data:
                     print('get_status')
                     tmp_string = "<"
                     tmp_num = 0
@@ -87,7 +93,8 @@ def handle_client(conn, address, anum):
                     tmp_string += ">"
                     conn.send(tmp_string.encode("UTF-8"))
                     continue
-                data = data.replace("get_status", "")
+                while "get_status" not in data:
+                    data = data.replace("get_status", "")
                 data = mapping[data]
                 #若桌中中已有该人，则删除该人并返回OK
                 if data in seat[anum]:
