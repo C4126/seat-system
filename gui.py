@@ -26,12 +26,12 @@ def add_member(data):
     global num
     for i in range(num):
         if len(seat[i]) == 0:
-            seat[i].append(data)
+            seat[i].append(mapping[data])
             return
     else:
         for i in range(num):
             if len(seat[i]) != 4:
-                seat[i].append(data)
+                seat[i].append(mapping[data])
                 return
 
 # 处理收发数据
@@ -72,7 +72,7 @@ def handle_client(conn, address, anum):
                     tmp_num = 0
                     for i in seat[anum]:
                         tmp_num += 1
-                        tmp_string = tmp_string + mapping[i]
+                        tmp_string = tmp_string + i
                         if tmp_num != 4:
                            tmp_string = tmp_string + ";"
                     while tmp_num < 4:
@@ -84,6 +84,7 @@ def handle_client(conn, address, anum):
                     conn.send(tmp_string.encode("UTF-8"))
                     continue
                 data = data.replace("get_status", "")
+                data = mapping[data]
                 if data in seat[anum]:
                     print("remove " + data)
                     seat[anum].remove(data)
