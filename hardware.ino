@@ -11,8 +11,8 @@ constexpr uint8_t SS_PIN = D8;
 MFRC522_SPI spiDevice = MFRC522_SPI(SS_PIN, RST_PIN);
 MFRC522 mfrc522 = MFRC522(&spiDevice);
 
-#define WIFISSID "YOUR_SSID"
-#define PASSWD "YOUR_PASSWORD"
+#define WIFISSID "Redmi_FA9A"
+#define PASSWD "FL15995899876"
 
 Ticker flipper;
 WiFiClient client;
