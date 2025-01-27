@@ -25,10 +25,12 @@ def create_server_socket(host, port):
 def add_member(data):
     global num
     for i in range(num):
+        #先在已有的桌子间寻找空桌子加入
         if len(seat[i]) == 0:
             seat[i].append(mapping[data])
             return
     else:
+        #若没有则从一号起寻找未满员的桌子加入
         for i in range(num):
             if len(seat[i]) != 4:
                 seat[i].append(mapping[data])
@@ -70,11 +72,13 @@ def handle_client(conn, address, anum):
                     print('get_status')
                     tmp_string = "<"
                     tmp_num = 0
+                    # 遍历seat[num]，将每个元素添加到tmp_string中
                     for i in seat[anum]:
                         tmp_num += 1
                         tmp_string = tmp_string + i
                         if tmp_num != 4:
                            tmp_string = tmp_string + ";"
+                    #若桌子人数不足4人，则添加No至四个元素
                     while tmp_num < 4:
                         tmp_num += 1
                         tmp_string = tmp_string + "No"
@@ -85,6 +89,7 @@ def handle_client(conn, address, anum):
                     continue
                 data = data.replace("get_status", "")
                 data = mapping[data]
+                #若桌中中已有该人，则删除该人并返回OK
                 if data in seat[anum]:
                     print("remove " + data)
                     seat[anum].remove(data)
@@ -92,10 +97,12 @@ def handle_client(conn, address, anum):
                     member_num -= 1
                     continue
                 else:
+                    #判断桌子是否满员，若是则返回fail_out
                     if member_num >= 4:
                         print("fail_out")
                         conn.send("fail_out".encode("UTF-8"))
                         continue
+                    #添加该人并返回OK
                     print("add " + data)
                     member_num += 1
                     seat[anum].append(data)
@@ -104,7 +111,7 @@ def handle_client(conn, address, anum):
         conn.close()
 
 def update_seat_display():
-    """更新seat数组的显示"""
+    #更新seat数组的显示
     for i, row in enumerate(seat):
         if i < len(seat_display):
             seat_display[i].config(text=str(row))
@@ -115,7 +122,7 @@ def update_seat_display():
     root.after(50, update_seat_display)  # 每隔50ms调用一次
 
 def create_gui():
-    """创建GUI窗口"""
+    #创建GUI窗口
     global root, seat_display
 
     root = tk.Tk()
@@ -130,7 +137,7 @@ if __name__ == '__main__':
     gui_thread = threading.Thread(target=create_gui)
     gui_thread.start()
 
-    # 这里可以放置其他服务器代码
+    # 配置并启动socket
     server_host = "127.0.0.1"
     server_port = 8888
     create_server_socket(server_host, server_port)
